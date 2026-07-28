@@ -1,6 +1,6 @@
 # @tzwzx/expo-jest-preset
 
-tazawa の Expo アプリ群（sync / kata / shikaku-collection / widget-now / yaboyo / yugaku / expo-boilerplate）で
+Expo アプリ群（sync / kata / shikaku-collection / widget-now / yaboyo / yugaku / expo-boilerplate）で
 共有する jest-expo ラッパープリセット。各リポの `jest.config.cjs` に散っていた共通骨格
 （hermes-stable transform / dynamic-import-node / cacheDirectory / testMatch / transformIgnorePatterns）を一元化する。
 

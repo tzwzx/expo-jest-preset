@@ -1,7 +1,7 @@
 {
   "name": "@tzwzx/expo-jest-preset",
   "version": "0.1.0",
-  "description": "Shared jest-expo preset for tazawa's Expo apps (hermes-stable transform, dynamic-import-node, common transformIgnorePatterns)",
+  "description": "Shared jest-expo preset for the Expo app fleet (hermes-stable transform, dynamic-import-node, common transformIgnorePatterns)",
   "license": "MIT",
   "repository": "github:tzwzx/expo-jest-preset",
   "main": "jest-preset.cjs",
