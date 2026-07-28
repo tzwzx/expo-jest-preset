@@ -1,7 +1,6 @@
 # @tzwzx/expo-jest-preset
 
-Expo アプリ群（sync / kata / shikaku-collection / widget-now / yaboyo / yugaku / expo-boilerplate）で
-共有する jest-expo ラッパープリセット。各リポの `jest.config.cjs` に散っていた共通骨格
+Expo アプリ群で共有する jest-expo ラッパープリセット。各リポの `jest.config.cjs` に散っていた共通骨格
 （hermes-stable transform / dynamic-import-node / cacheDirectory / testMatch / transformIgnorePatterns）を一元化する。
 
 設定の実体と「なぜその設定なのか」は [`jest-preset.cjs`](jest-preset.cjs) のコメントに書いてある。
@@ -25,8 +24,8 @@ module.exports = {
 
 - `testMatch` の既定は `src/__tests__/**/*.test.ts?(x)`。store-shots などの追加ディレクトリを持つアプリは
   アプリ側で上書きして拡張する
-- 独自の babel プラグイン（yaboyo の preserve-expo-os-plugin 等）が要るアプリは、アプリ側で `transform` を
-  上書きする（`require("@tzwzx/expo-jest-preset")` を spread して plugins を足す）
+- 独自の babel プラグインが要るアプリは、アプリ側で `transform` を上書きする
+  （`require("@tzwzx/expo-jest-preset")` を spread して plugins を足す）
 - `moduleNameMapper` は不要（jest-expo が tsconfig.json の paths から自動生成する）
 - `cacheDirectory` が `<rootDir>/.jest-cache` なので、アプリの `.gitignore` に入れておく
 
@@ -47,7 +46,7 @@ module.exports = {
 消費側で実測すること。
 
 ```bash
-cd ../expo-boilerplate
+cd <消費側のアプリ>
 # package.json の @tzwzx/expo-jest-preset を "file:../expo-jest-preset" へ一時的に差し替える
 bun install && bun test:unit
 git restore package.json bun.lock && bun install   # 復元
