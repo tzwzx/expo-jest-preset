@@ -40,10 +40,10 @@ module.exports = {
   },
   // Expo 推奨パターンのスーパーセット。`react-native` プレフィックスは境界なしで
   // マッチするため react-native-* を含む。@gorhom/* / posthog-react-native /
-  // @shopify/flash-list / store-shots はマッチしないので明示する
+  // @shopify/flash-list / @tzwzx/store-shots はマッチしないので明示する
   // （使っていないアプリにあっても無害）。
   // https://docs.expo.dev/develop/unit-testing/
   transformIgnorePatterns: [
-    "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|posthog-react-native|@gorhom/.*|@shopify/flash-list|store-shots)",
+    "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|posthog-react-native|@gorhom/.*|@shopify/flash-list|@tzwzx/store-shots)",
   ],
 };
