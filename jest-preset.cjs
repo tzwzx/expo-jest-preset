@@ -18,6 +18,13 @@ module.exports = {
   ...jestExpoPreset,
   // キャッシュをリポジトリ内に固定してセッションをまたいで再利用する（.gitignore 前提）
   cacheDirectory: "<rootDir>/.jest-cache",
+  // jest-expo の setup に続けて、モック仕様の不足を補うパッチを差し込む。
+  // アプリ側 jest.config.cjs の setupFiles は preset の後ろに連結される（Jest の仕様）ため、
+  // ここに足してもアプリの setupFiles は落ちない
+  setupFiles: [
+    ...(jestExpoPreset.setupFiles ?? []),
+    require.resolve("./expo-observe-mock-patch.cjs"),
+  ],
   // jest-expo 既定の testMatch は __tests__ 配下をすべてテスト扱いするため、
   // 拡張子で絞ってヘルパーファイルを除外する。追加ディレクトリ（store-shots 等）を
   // 持つアプリは自リポの jest.config.cjs で testMatch を上書きして拡張する

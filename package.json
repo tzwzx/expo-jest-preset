@@ -5,7 +5,7 @@
   "license": "MIT",
   "repository": "github:tzwzx/expo-jest-preset",
   "main": "jest-preset.cjs",
-  "files": ["jest-preset.cjs"],
+  "files": ["jest-preset.cjs", "expo-observe-mock-patch.cjs"],
   "dependencies": {
     "babel-plugin-dynamic-import-node": "2.3.3"
   },
