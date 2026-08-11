@@ -22,7 +22,7 @@ module.exports = {
 
 アプリ側に書くのは **coverage 系 / setupFiles / アプリ固有の上書き**だけ。
 
-- `testMatch` の既定は `src/__tests__/**/*.test.ts?(x)`。store-shots などの追加ディレクトリを持つアプリは
+- `testMatch` の既定は `src/__tests__/**/*.test.ts?(x)`。`src/__tests__` の外にもテストを置くアプリは
   アプリ側で上書きして拡張する
 - 独自の babel プラグインが要るアプリは、アプリ側で `transform` を上書きする
   （`require("@tzwzx/expo-jest-preset")` を spread して plugins を足す）

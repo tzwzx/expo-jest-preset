@@ -26,8 +26,8 @@ module.exports = {
     require.resolve("./expo-observe-mock-patch.cjs"),
   ],
   // jest-expo 既定の testMatch は __tests__ 配下をすべてテスト扱いするため、
-  // 拡張子で絞ってヘルパーファイルを除外する。追加ディレクトリ（store-shots 等）を
-  // 持つアプリは自リポの jest.config.cjs で testMatch を上書きして拡張する
+  // 拡張子で絞ってヘルパーファイルを除外する。src/__tests__ の外にもテストを置く
+  // アプリは自リポの jest.config.cjs で testMatch を上書きして拡張する
   testMatch: ["<rootDir>/src/__tests__/**/*.test.ts?(x)"],
   // jest-expo 既定の transform（アセット変換）は流用し、JS/TS 用エントリだけ差し替える
   transform: {
@@ -47,10 +47,9 @@ module.exports = {
   },
   // Expo 推奨パターンのスーパーセット。`react-native` プレフィックスは境界なしで
   // マッチするため react-native-* を含む。@gorhom/* / posthog-react-native /
-  // @shopify/flash-list / @tzwzx/store-shots はマッチしないので明示する
-  // （使っていないアプリにあっても無害）。
+  // @shopify/flash-list はマッチしないので明示する（使っていないアプリにあっても無害）。
   // https://docs.expo.dev/develop/unit-testing/
   transformIgnorePatterns: [
-    "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|posthog-react-native|@gorhom/.*|@shopify/flash-list|@tzwzx/store-shots)",
+    "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|posthog-react-native|@gorhom/.*|@shopify/flash-list)",
   ],
 };
