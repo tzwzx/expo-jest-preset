@@ -1,4 +1,4 @@
-/* oxlint-disable unicorn/prefer-module -- Jest の setupFiles は CommonJS でなければ読み込まれない */
+// Jest の setupFiles は CommonJS でなければ読み込まれない。
 // expo-image 57.0.2 は import 時に requireOptionalNativeModule("ExpoObserve") を呼び、
 // truthy が返ると observe.getIntegrations() を続けて呼ぶ（expo-observe 連携の初期化）。
 // jest 環境では globalThis.expo.modules に ExpoObserve が無いため NativeModulesProxy

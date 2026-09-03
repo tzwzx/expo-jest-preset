@@ -1,4 +1,4 @@
-/* oxlint-disable unicorn/prefer-module -- Jest のプリセットは CommonJS でなければ読み込まれない */
+// Jest のプリセットは CommonJS でなければ読み込まれない。
 // jest-expo をラップするフリート共通プリセット。
 // 各アプリの jest.config.cjs は `preset: "@tzwzx/expo-jest-preset"` + アプリ固有分
 // （coverageThreshold / collectCoverageFrom / setupFiles / 追加 testMatch 等）だけを書く。
