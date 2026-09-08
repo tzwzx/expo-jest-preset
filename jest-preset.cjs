@@ -1,35 +1,33 @@
-// Jest のプリセットは CommonJS でなければ読み込まれない。
-// jest-expo をラップするフリート共通プリセット。
-// 各アプリの jest.config.cjs は `preset: "@tzwzx/expo-jest-preset"` + アプリ固有分
-// （coverageThreshold / collectCoverageFrom / setupFiles / 追加 testMatch 等）だけを書く。
+// Jest presets must be CommonJS.
+// Fleet wrapper around jest-expo. App jest.config.cjs should only add
+// app-specific pieces (coverageThreshold, collectCoverageFrom, setupFiles,
+// extra testMatch).
 //
-// 【babel 設定について】
-// 各リポのルートに babel.config.* は置かない（Metro が本番ビルドで読んでしまうため）。
-// Jest 専用の babel オプションはこの transform に babelrc:false / configFile:false 付きで
-// 閉じ込める。含まれるもの:
-// - `unstable_transformProfile: "hermes-stable"` — 外すと babel-preset-expo が hermes-v0 に
-//   フォールバックし、名前付きキャプチャグループを素の連番グループへ書き換えて静かに壊す
-// - `babel-plugin-dynamic-import-node` — Jest の VM は動的 import() を実行できない。
-//   try/catch に囲まれた await import(...) が「例外を握りつぶされて静かに失敗する」事故を防ぐ
-// - react-native-worklets/plugin は babel-preset-expo が自動追加するため明示不要
+// Do not put babel.config.* at a repo root — Metro will read it in production
+// builds. Keep Jest-only Babel options here with babelrc:false / configFile:false:
+// - unstable_transformProfile: "hermes-stable" — without it, babel-preset-expo
+//   falls back to hermes-v0 and silently rewrites named capture groups to
+//   numbered ones
+// - babel-plugin-dynamic-import-node — Jest's VM cannot run dynamic import();
+//   await import(...) in try/catch otherwise fails silently
+// - react-native-worklets/plugin is added by babel-preset-expo; do not add it again
 const jestExpoPreset = require("jest-expo/jest-preset");
 
 module.exports = {
   ...jestExpoPreset,
-  // キャッシュをリポジトリ内に固定してセッションをまたいで再利用する（.gitignore 前提）
+  // Pin the cache inside the repo so it survives sessions (.gitignore it)
   cacheDirectory: "<rootDir>/.jest-cache",
-  // jest-expo の setup に続けて、モック仕様の不足を補うパッチを差し込む。
-  // アプリ側 jest.config.cjs の setupFiles は preset の後ろに連結される（Jest の仕様）ため、
-  // ここに足してもアプリの setupFiles は落ちない
+  // Patch jest-expo mocks after its setup. App setupFiles are appended after
+  // the preset's (Jest's merge order), so this does not drop them.
   setupFiles: [
     ...(jestExpoPreset.setupFiles ?? []),
     require.resolve("./expo-observe-mock-patch.cjs"),
   ],
-  // jest-expo 既定の testMatch は __tests__ 配下をすべてテスト扱いするため、
-  // 拡張子で絞ってヘルパーファイルを除外する。src/__tests__ の外にもテストを置く
-  // アプリは自リポの jest.config.cjs で testMatch を上書きして拡張する
+  // jest-expo's default testMatch treats everything under __tests__ as a test.
+  // Restrict by extension so helpers are excluded. Apps that keep tests outside
+  // src/__tests__ should override testMatch in their own jest.config.cjs.
   testMatch: ["<rootDir>/src/__tests__/**/*.test.ts?(x)"],
-  // jest-expo 既定の transform（アセット変換）は流用し、JS/TS 用エントリだけ差し替える
+  // Reuse jest-expo asset transforms; replace only the JS/TS entry.
   transform: {
     ...jestExpoPreset.transform,
     "\\.[jt]sx?$": [
@@ -45,9 +43,10 @@ module.exports = {
       },
     ],
   },
-  // Expo 推奨パターンのスーパーセット。`react-native` プレフィックスは境界なしで
-  // マッチするため react-native-* を含む。@gorhom/* / posthog-react-native /
-  // @shopify/flash-list はマッチしないので明示する（使っていないアプリにあっても無害）。
+  // Superset of Expo's recommended pattern. The `react-native` prefix matches
+  // without a boundary, so it already covers react-native-*. @gorhom/*,
+  // posthog-react-native, and @shopify/flash-list do not match and must be
+  // listed (harmless if an app does not use them).
   // https://docs.expo.dev/develop/unit-testing/
   transformIgnorePatterns: [
     "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|posthog-react-native|@gorhom/.*|@shopify/flash-list)",
