@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -euo pipefail
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/_lib.sh"
+verify_require_run_id
+name=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --name) name="${2:-}"; shift 2 ;;
+    *) echo "usage: inspect --name STEM" >&2; exit 2 ;;
+  esac
+done
+[[ -n "$name" ]] || { echo "--name required" >&2; exit 2; }
+evidence="$(verify_evidence_dir "$name")"
+command cp "$REPO_ROOT/jest-preset.cjs" "$evidence/jest-preset.cjs"
+command cp "$REPO_ROOT/expo-observe-mock-patch.cjs" "$evidence/expo-observe-mock-patch.cjs"
+set +e
+python3 - "$evidence" "$REPO_ROOT/jest-preset.cjs" "$REPO_ROOT/expo-observe-mock-patch.cjs" <<'PY'
+import sys
+from pathlib import Path
+ev, preset, patch = Path(sys.argv[1]), Path(sys.argv[2]).read_text(), Path(sys.argv[3]).read_text()
+needles = [
+    'require("jest-expo/jest-preset")',
+    'unstable_transformProfile: "hermes-stable"',
+    'babel-plugin-dynamic-import-node',
+    "babelrc: false",
+    "configFile: false",
+    'cacheDirectory: "<rootDir>/.jest-cache"',
+    'testMatch: ["<rootDir>/src/__tests__/**/*.test.ts?(x)"]',
+    'require.resolve("./expo-observe-mock-patch.cjs")',
+]
+lines = [f"{'OK' if n in preset else 'MISSING'}\t{n}" for n in needles]
+patch_needles = ["ExpoObserve", "getIntegrations"]
+lines += [f"{'OK' if n in patch else 'MISSING'}\tpatch:{n}" for n in patch_needles]
+(ev / "contract.txt").write_text("\n".join(lines) + "\n")
+sys.exit(1 if any(l.startswith("MISSING") for l in lines) else 0)
+PY
+code=$?
+set -e
+printf '%s\n' "$code" >"$evidence/exit.txt"
+echo "verify-inspect name=$name exit=$(cat "$evidence/exit.txt") evidence=$evidence"
+exit 0

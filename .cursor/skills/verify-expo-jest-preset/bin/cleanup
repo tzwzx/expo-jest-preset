@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/_lib.sh"
+verify_require_run_id
+echo "cleanup: no scratch created. evidence left at $EVIDENCE_ROOT"

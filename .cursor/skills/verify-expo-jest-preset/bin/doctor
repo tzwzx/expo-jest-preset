@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/_lib.sh"
+fail() { echo "doctor FAIL: $*" >&2; exit 1; }
+ok() { echo "doctor ok: $*"; }
+[[ -f "$REPO_ROOT/jest-preset.cjs" ]] || fail "missing jest-preset.cjs"
+[[ -f "$REPO_ROOT/expo-observe-mock-patch.cjs" ]] || fail "missing expo-observe-mock-patch.cjs"
+name="$(python3 -c "import json; print(json.load(open('$REPO_ROOT/package.json'))['name'])")"
+[[ "$name" == "@tzwzx/expo-jest-preset" ]] || fail "unexpected package name $name"
+ok "package $name"
+echo "doctor PASS: preset sources present"
+echo "doctor note: requiring jest-preset.cjs needs jest-expo (peer). This checkout has no node_modules. Drive the static contract, not bun test here."
